@@ -47,7 +47,7 @@ app.get("/", async (req, res) => {
     }
 )
 
-// Gets the menu from Semma API
+// Gets the menu from the Semma API
 async function getFoodMenu (restaurantObjectArray) {
     // Empties the menu array
     restaurantMenusArray = []
