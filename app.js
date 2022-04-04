@@ -18,10 +18,10 @@ const restaurantObjectArray = [
         name: 'Rentukka',
         id: 206838
     },
-    // {
-    //     name: 'Lozzi',
-    //     id: 207272
-    // }
+    {
+        name: 'Lozzi',
+        id: 207272
+    },
     {
         name: 'Piato',
         id: 207735
@@ -29,7 +29,27 @@ const restaurantObjectArray = [
     {
         name: 'Maija',
         id: 207659
-    } 
+    },
+    {
+        name: 'Ylistö',
+        id: 207103
+    },
+    {
+        name: 'Syke',
+        id: 207483
+    },
+    {
+        name: 'Uno',
+        id: 207190
+    },
+    {
+        name: 'Kvarkki',
+        id: 207038
+    },
+    {
+        name: 'Belvedere',
+        id: 207354
+    }
 ]
 
 // This is where the menus of the restarants is going to get stored
@@ -68,14 +88,22 @@ async function getFoodMenu (restaurantObjectArray) {
     
         for (let meal of restaurantMenu) {
             for (let mealPart of meal.Meals) {
-               let ingredientsData = await axios.get(`https://www.semma.fi/api/restaurant/menu/recipe?language=fi&recipeId=${mealPart.RecipeId}`)
-               let protein = proteinNumberF(ingredientsData.data.Ingredients)
-               let kcal = kcalNumberF(ingredientsData.data.Ingredients)
-               mealPart.Protein = protein;
-               mealPart.Kcal = kcal
-               mealPart.KcalPerProtein = kcal / protein
-               mealPart.Restaurant = restaurant.name
-               sortedMealArray.push(mealPart);
+                let ingredientsData = await axios.get(`https://www.semma.fi/api/restaurant/menu/recipe?language=fi&recipeId=${mealPart.RecipeId}`)
+                if (ingredientsData.data.Ingredients) {
+                    let protein = proteinNumberF(ingredientsData.data.Ingredients)
+                    let kcal = kcalNumberF(ingredientsData.data.Ingredients)
+                    mealPart.Protein = protein;
+                    mealPart.Kcal = kcal
+                    mealPart.KcalPerProtein = kcal / protein
+                    mealPart.Restaurant = restaurant.name
+                    sortedMealArray.push(mealPart);
+                } else {
+                    mealPart.Protein = null;
+                    mealPart.Kcal = null;
+                    mealPart.KcalPerProtein = null;
+                    mealPart.Restaurant = restaurant.name
+                    sortedMealArray.push(mealPart)
+                }
             }
         }
         restaurantMenusArray.push(restaurantMenu)
