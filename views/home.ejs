@@ -15,6 +15,11 @@
             <h2><%=restaurantMenu2.Name%></h2>
                <% for (let restaurantMenu3 of restaurantMenu2.Meals) { %>
                 <h3><%=restaurantMenu3.Name%></h3>
+                <ul>
+                    <li><%=restaurantMenu3.Protein%> g/100g proteiinia</li>
+                    <li><%=restaurantMenu3.Kcal%> kcal/100g</li>
+                    <li><%=restaurantMenu3.KcalPerProtein%> Kaloria per 1g proteiinia</li>
+                </ul>
                <% } %>
             <% } %>
             <br>
@@ -22,5 +27,10 @@
             <br>
             <br>
         <% } %>
+        <% for (let sortedMeal of sortedMealArray) { %>
+            <h4><%=sortedMeal.Name%></h4>
+            <p>____<%=sortedMeal.Restaurant%>, <%=sortedMeal.KcalPerProtein%></p>
+            <% } %>
+
 </body>
 </html>

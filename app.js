@@ -18,10 +18,10 @@ const restaurantObjectArray = [
         name: 'Rentukka',
         id: 206838
     },
-    {
-        name: 'Lozzi',
-        id: 207272
-    },
+    // {
+    //     name: 'Lozzi',
+    //     id: 207272
+    // }
     {
         name: 'Piato',
         id: 207735
@@ -29,16 +29,25 @@ const restaurantObjectArray = [
     {
         name: 'Maija',
         id: 207659
-    }
+    } 
 ]
 
 // This is where the menus of the restarants is going to get stored
 let restaurantMenusArray = []
+let sortedMealArray = []
 
 app.get("/", async (req, res) => {
         try {
             await getFoodMenu(restaurantObjectArray)
-            res.render('home', { restaurantMenusArray, restaurantObjectArray })
+            sortedMealArray.sort((a, b) => {
+                if (a.KcalPerProtein > b.KcalPerProtein) {
+                    return 1
+                } else {
+                    return -1
+                }
+            })
+            console.log(sortedMealArray);
+            res.render('home', { restaurantMenusArray, restaurantObjectArray, sortedMealArray})
         } 
         catch (e) {
             res.render('error')
@@ -49,34 +58,43 @@ app.get("/", async (req, res) => {
 
 // Gets the menu from the Semma API
 async function getFoodMenu (restaurantObjectArray) {
-    // Empties the menu array
+    // Empties the arrays
     restaurantMenusArray = []
+    sortedMealArray = []
 
     for (const restaurant of restaurantObjectArray) {
         let restaurantToGet = await axios.get(`https://www.semma.fi/api/restaurant/menu/week?language=fi&restaurantPageId=${restaurant.id}&weekDate=${year}-${month}-${date}`)
-        restaurantMenusArray.push(restaurantToGet.data.LunchMenus[day].SetMenus)
+        let restaurantMenu = restaurantToGet.data.LunchMenus[day].SetMenus
+    
+        for (let meal of restaurantMenu) {
+            for (let mealPart of meal.Meals) {
+               let ingredientsData = await axios.get(`https://www.semma.fi/api/restaurant/menu/recipe?language=fi&recipeId=${mealPart.RecipeId}`)
+               let protein = proteinNumberF(ingredientsData.data.Ingredients)
+               let kcal = kcalNumberF(ingredientsData.data.Ingredients)
+               mealPart.Protein = protein;
+               mealPart.Kcal = kcal
+               mealPart.KcalPerProtein = kcal / protein
+               mealPart.Restaurant = restaurant.name
+               sortedMealArray.push(mealPart);
+            }
+        }
+        restaurantMenusArray.push(restaurantMenu)
     }
     return
 }
 
 function proteinNumberF(food) {
-    const proteinCommaArray = /....(?=...Prote)/.exec(food.ingredients.toString())
+    const proteinCommaArray = /....(?=...Prote)/.exec(food.toString())
     const proteinNumber = Number(proteinCommaArray[0].replace(/,/g, '.')) 
     return proteinNumber
   }
   
   function kcalNumberF(food) {
-    const kcalCommaArray = /...(?=.kcal)/.exec(food.ingredients.toString())
+    const kcalCommaArray = /...(?=.kcal)/.exec(food.toString())
     const kcalNumber = Number(kcalCommaArray[0])
     return kcalNumber
   
   }
-  
-  function calcProtKcal(kcalNumber, proteinNumber) {
-  const kcalPerProteinG =  kcalNumber / proteinNumber
-  return kcalPerProteinG
-  }
-  
 
 app.listen(3000, () => {
     console.log("server on 3000");
