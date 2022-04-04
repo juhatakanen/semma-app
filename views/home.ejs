@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testi</title>
+</head>
+<body>
+    <% let i = 0 %>
+        <% for (let restaurantMenu of restaurantMenusArray) { %>
+            <h1><%=restaurantObjectArray[i].name%></h1>
+            <% i++ %>
+           <% for (let restaurantMenu2 of restaurantMenu) { %>
+            <h2><%=restaurantMenu2.Name%></h2>
+               <% for (let restaurantMenu3 of restaurantMenu2.Meals) { %>
+                <h3><%=restaurantMenu3.Name%></h3>
+               <% } %>
+            <% } %>
+            <br>
+            <br>
+            <br>
+            <br>
+        <% } %>
+</body>
+</html>
