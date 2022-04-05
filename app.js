@@ -12,43 +12,60 @@ const date = fullDate.getDate()
 const month = fullDate.getMonth() + 1
 const year = fullDate.getFullYear()
 
+const semma = 'semma'
+const foodandco = 'foodandco'
+
 // These are the restaurants where the data is going to be searched, based in the ID
 const restaurantObjectArray = [
     {
         name: 'Rentukka',
-        id: 206838
+        id: 206838,
+        company: semma
+    },
+    {
+        name: 'Taide',
+        id: 321708,
+        company: foodandco
     },
     {
         name: 'Lozzi',
-        id: 207272
+        id: 207272,
+        company: semma
     },
     {
         name: 'Piato',
-        id: 207735
+        id: 207735,
+        company: semma
     },
     {
         name: 'Maija',
-        id: 207659
+        id: 207659,
+        company: semma
     },
     {
         name: 'Ylistö',
-        id: 207103
+        id: 207103,
+        company: semma
     },
     {
         name: 'Syke',
-        id: 207483
+        id: 207483,
+        company: semma
     },
     {
         name: 'Uno',
-        id: 207190
+        id: 207190,
+        company: semma
     },
     {
         name: 'Kvarkki',
-        id: 207038
+        id: 207038,
+        company: semma
     },
     {
         name: 'Belvedere',
-        id: 207354
+        id: 207354,
+        company: semma
     }
 ]
 
@@ -66,7 +83,7 @@ app.get("/", async (req, res) => {
                     return -1
                 }
             })
-            console.log(sortedMealArray);
+            // console.log(sortedMealArray);
             res.render('home', { restaurantMenusArray, restaurantObjectArray, sortedMealArray})
         } 
         catch (e) {
@@ -83,24 +100,26 @@ async function getFoodMenu (restaurantObjectArray) {
     sortedMealArray = []
 
     for (const restaurant of restaurantObjectArray) {
-        let restaurantToGet = await axios.get(`https://www.semma.fi/api/restaurant/menu/week?language=fi&restaurantPageId=${restaurant.id}&weekDate=${year}-${month}-${date}`)
+        let restaurantToGet = await axios.get(`https://www.${restaurant.company}.fi/api/restaurant/menu/week?language=fi&restaurantPageId=${restaurant.id}&weekDate=${year}-${month}-${date}`)
         let restaurantMenu = restaurantToGet.data.LunchMenus[day].SetMenus
     
         for (let meal of restaurantMenu) {
             for (let mealPart of meal.Meals) {
-                let ingredientsData = await axios.get(`https://www.semma.fi/api/restaurant/menu/recipe?language=fi&recipeId=${mealPart.RecipeId}`)
+                let ingredientsData = await axios.get(`https://www.${restaurant.company}.fi/api/restaurant/menu/recipe?language=fi&recipeId=${mealPart.RecipeId}`)
                 if (ingredientsData.data.Ingredients) {
                     let protein = proteinNumberF(ingredientsData.data.Ingredients)
+                    let salt = saltNumberF(ingredientsData.data.Ingredients)
                     let kcal = kcalNumberF(ingredientsData.data.Ingredients)
                     mealPart.Protein = protein;
                     mealPart.Kcal = kcal
-                    mealPart.KcalPerProtein = kcal / protein
+                    mealPart.KcalPerProtein = Math.round((kcal / protein) * 100) / 100
+                    mealPart.Salt = salt
                     mealPart.Restaurant = restaurant.name
                     sortedMealArray.push(mealPart);
                 } else {
                     mealPart.Protein = null;
                     mealPart.Kcal = null;
-                    mealPart.KcalPerProtein = null;
+                    mealPart.KcalPerProtein = 10000;
                     mealPart.Restaurant = restaurant.name
                     sortedMealArray.push(mealPart)
                 }
@@ -115,6 +134,11 @@ function proteinNumberF(food) {
     const proteinCommaArray = /....(?=...Prote)/.exec(food.toString())
     const proteinNumber = Number(proteinCommaArray[0].replace(/,/g, '.')) 
     return proteinNumber
+  }
+function saltNumberF(food) {
+    const saltCommaArray = /....(?=...Suola)/.exec(food.toString())
+    const saltNumber = Number(saltCommaArray[0].replace(/,/g, '.')) 
+    return saltNumber
   }
   
   function kcalNumberF(food) {
