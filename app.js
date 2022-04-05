@@ -48,6 +48,11 @@ const restaurantObjectArray = [
         company: semma
     },
     {
+        name: 'Fiilu',
+        id: 231260,
+        company: foodandco
+    },
+    {
         name: 'Syke',
         id: 207483,
         company: semma
@@ -117,8 +122,9 @@ async function getFoodMenu (restaurantObjectArray) {
                     mealPart.Restaurant = restaurant.name
                     sortedMealArray.push(mealPart);
                 } else {
-                    mealPart.Protein = null;
-                    mealPart.Kcal = null;
+                    mealPart.Protein = 10000;
+                    mealPart.Kcal = 10000;
+                    mealPart.Salt = 10000;
                     mealPart.KcalPerProtein = 10000;
                     mealPart.Restaurant = restaurant.name
                     sortedMealArray.push(mealPart)
