@@ -7,7 +7,7 @@ app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, '/views'))
 
 const fullDate = new Date()
-const day = fullDate.getDay() - 1
+let day = fullDate.getDay() - 1
 const date = fullDate.getDate()
 const month = fullDate.getMonth() + 1
 const year = fullDate.getFullYear()
@@ -88,7 +88,6 @@ app.get("/", async (req, res) => {
                     return -1
                 }
             })
-            // console.log(sortedMealArray);
             res.render('home', { restaurantMenusArray, restaurantObjectArray, sortedMealArray})
         } 
         catch (e) {
@@ -105,6 +104,9 @@ async function getFoodMenu (restaurantObjectArray) {
     sortedMealArray = []
 
     for (const restaurant of restaurantObjectArray) {
+        if (day === -1) {
+            day = 6
+        }
         let restaurantToGet = await axios.get(`https://www.${restaurant.company}.fi/api/restaurant/menu/week?language=fi&restaurantPageId=${restaurant.id}&weekDate=${year}-${month}-${date}`)
         let restaurantMenu = restaurantToGet.data.LunchMenus[day].SetMenus
     
@@ -151,7 +153,6 @@ function saltNumberF(food) {
     const kcalCommaArray = /...(?=.kcal)/.exec(food.toString())
     const kcalNumber = Number(kcalCommaArray[0])
     return kcalNumber
-  
   }
 
   let port = process.env.PORT;
