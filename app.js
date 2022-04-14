@@ -3,6 +3,9 @@ const axios = require("axios")
 const app = express()
 const path = require('path')
 
+app.use(express.static('public'))
+app.use('/css', express.static(__dirname + 'public.css'))
+
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, '/views'))
 
@@ -16,61 +19,72 @@ const semma = 'semma'
 const foodandco = 'foodandco'
 
 // These are the restaurants where the data is going to be searched, based in the ID
-const restaurantObjectArray = [
+const restaurants = [
     {
         name: 'Rentukka',
         id: 206838,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
     },
     {
         name: 'Taide',
         id: 321708,
-        company: foodandco
+        company: foodandco,
+        website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
     },
     {
         name: 'Lozzi',
         id: 207272,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
     },
     {
         name: 'Piato',
         id: 207735,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
     },
     {
         name: 'Maija',
         id: 207659,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
     },
     {
         name: 'Ylistö',
         id: 207103,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
     },
     {
         name: 'Fiilu',
         id: 231260,
-        company: foodandco
+        company: foodandco,
+        website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
     },
     {
         name: 'Syke',
         id: 207483,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
     },
     {
         name: 'Uno',
         id: 207190,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
     },
     {
         name: 'Kvarkki',
         id: 207038,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
     },
     {
         name: 'Belvedere',
         id: 207354,
-        company: semma
+        company: semma,
+        website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
     }
 ]
 
@@ -80,7 +94,7 @@ let sortedMealArray = []
 
 app.get("/", async (req, res) => {
         try {
-            await getFoodMenu(restaurantObjectArray)
+            await getFoodMenu(restaurants)
             sortedMealArray.sort((a, b) => {
                 if (a.KcalPerProtein > b.KcalPerProtein) {
                     return 1
@@ -88,7 +102,7 @@ app.get("/", async (req, res) => {
                     return -1
                 }
             })
-            res.render('home', { restaurantMenusArray, restaurantObjectArray, sortedMealArray})
+            res.render('home', { sortedMealArray})
         } 
         catch (e) {
             res.render('error')
@@ -98,12 +112,12 @@ app.get("/", async (req, res) => {
 )
 
 // Gets the menu from the Semma API
-async function getFoodMenu (restaurantObjectArray) {
+async function getFoodMenu (restaurants) {
     // Empties the arrays
     restaurantMenusArray = []
     sortedMealArray = []
 
-    for (const restaurant of restaurantObjectArray) {
+    for (const restaurant of restaurants) {
         if (day === -1) {
             day = 6
         }
@@ -124,6 +138,7 @@ async function getFoodMenu (restaurantObjectArray) {
                     mealPart.KcalPerProtein = Math.round((kcal / protein) * 100) / 100
                     mealPart.Salt = salt
                     mealPart.Restaurant = restaurant.name
+                    mealPart.Website = restaurant.website
                     sortedMealArray.push(mealPart);
                 } else {
                     mealPart.Protein = 10000;

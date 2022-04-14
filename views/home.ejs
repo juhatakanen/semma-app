@@ -5,49 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Syömään</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <table id="myTable2">
-    <tr>
-        <th onclick="sortTable(0)">Nro.</th>
-        <th onclick="sortTable(1)">Ruoka</th>
-        <th onclick="sortTable(2)">Ravintola</th>
-        <th onclick="sortTable(3)">Prot/100g</th>
-        <th onclick="sortTable(4)">Kcal/100g</th>
-        <th onclick="sortTable(5)">Kcal / 1g protein</th>
-        <th onclick="sortTable(6)">Suolaa / 100g</th>
-    </tr>
+      <tr>
+          <th onclick="sortTable(0)">Nro.</th>
+          <th onclick="sortTable(1)">Ruoka</th>
+          <th onclick="sortTable(2)">Ravintola</th>
+          <th onclick="sortTable(3)">Prot/100g</th>
+          <th onclick="sortTable(4)">Kcal/100g</th>
+          <th onclick="sortTable(5)">Kcal / 1g protein</th>
+          <th onclick="sortTable(6)">Suolaa / 100g</th>
+      </tr>
     <% let j = 1 %>
     <% for (let sortedMeal of sortedMealArray) { %>
-        <tr>
+        <tr class="<%=sortedMeal.Restaurant%>">
             <td><%=j%></td>
             <td><%=sortedMeal.Name%></td>
-            <td><%=sortedMeal.Restaurant%></td>
+            <td><a href="<%=sortedMeal.Website%>" target="_blank" rel="noopener noreferrer"><%=sortedMeal.Restaurant%></a></td>
             <td><%=sortedMeal.Protein%> g</td>
             <td><%=sortedMeal.Kcal%> kcal</td>
             <td><%=sortedMeal.KcalPerProtein%> kcal/pro</td>
             <td><%=sortedMeal.Salt%> g</td>
         </tr>
         <% j++ %>
-<% } %>
-</table>
-    <% let i = 0 %>
-    <% for (let restaurantMenu of restaurantMenusArray) { %>
-        <h1><%=restaurantObjectArray[i].name%></h1>
-        <% i++ %>
-        <% for (let restaurantMenu2 of restaurantMenu) { %>
-            <h2><%=restaurantMenu2.Name%></h2>
-            <% for (let restaurantMenu3 of restaurantMenu2.Meals) { %>
-                <h3><%=restaurantMenu3.Name%></h3>
-                <ul>
-                    <li><%=restaurantMenu3.Protein%> g/100g proteiinia</li>
-                    <li><%=restaurantMenu3.Kcal%> kcal/100g</li>
-                    <li><%=restaurantMenu3.KcalPerProtein%> Kaloria per 1g proteiinia</li>
-                </ul>
-                <% } %>
-            <% } %>
-            ----------------------------------------------------------------------------------------------------------------------------------------------------------
-        <% } %>
+    <% } %>
+    </table>
+    
+
+        
         <script>
             function sortTable(n) {
               var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
