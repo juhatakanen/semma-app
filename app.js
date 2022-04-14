@@ -10,77 +10,71 @@ app.use('/css', express.static(__dirname + 'public.css'))
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, '/views'))
   
-const fullDate = new Date()
-let day = fullDate.getDay() - 1
-const date = fullDate.getDate()
-const month = fullDate.getMonth() + 1
-const year = fullDate.getFullYear()
-
 const semma = 'semma'
 const foodandco = 'foodandco'
   
   // These are the restaurants where the data is going to be searched, based in the ID
   const restaurants = [
-        {
-          name: 'Rentukka',
-          id: 206838,
-          company: semma,
-          website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
-        },
-        {
-            name: 'Taide',
-            id: 321708,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
-        },
-        {
-            name: 'Lozzi',
-            id: 207272,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
-        },
-        {
-            name: 'Piato',
-            id: 207735,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
-        },
-        {
-            name: 'Maija',
-            id: 207659,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
-        },
-        {
-            name: 'Ylistö',
-            id: 207103,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
-        },
-        {
-            name: 'Fiilu',
-            id: 231260,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
-        },
-        {
-            name: 'Syke',
-            id: 207483,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
-        },
-        {
-            name: 'Uno',
-            id: 207190,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
-        },
-        {
-            name: 'Kvarkki',
-            id: 207038,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
-        },
+        // {
+        //   name: 'Rentukka',
+        //   id: 206838,
+        //   company: semma,
+        //   website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
+        // },
+        // {
+        //     name: 'Taide',
+        //     id: 321708,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
+        // },
+        // {
+        //     name: 'Lozzi',
+        //     id: 207272,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
+        // },
+        // {
+        //     name: 'Piato',
+        //     id: 207735,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
+        // },
+        // {
+        //     name: 'Maija',
+        //     id: 207659,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
+        // },
+        // {
+        //     name: 'Ylistö',
+        //     id: 207103,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
+        // },
+        // {
+        //     name: 'Fiilu',
+        //     id: 231260,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
+        // },
+        // {
+        //     name: 'Syke',
+        //     id: 207483,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
+        // },
+        // {
+        //     name: 'Uno',
+        //     id: 207190,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
+        // },
+        // {
+        //     name: 'Kvarkki',
+        //     id: 207038,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
+        // },
         {
             name: 'Belvedere',
             id: 207354,
@@ -95,16 +89,18 @@ const foodandco = 'foodandco'
     
     app.get("/", (req, res) => {
         let data = require('./data.json')
-            res.render('home', { data })
+        let time = (fs.readFileSync('lastUpdateTime.txt')).toString();
+            res.render('home', { data , time })
         }
     )
 
-    app.get("/r", async (req, res) => {
+    app.get("/update", async (req, res) => {
             try {
                 await getFoodMenu(restaurants)
                 
                 let data = require('./data.json')
-                res.render('home', { data })
+                let time = (fs.readFileSync('lastUpdateTime.txt')).toString();
+                res.render('home', { data , time })
             } 
             catch (e) {
                 res.render('error')
@@ -115,6 +111,14 @@ const foodandco = 'foodandco'
 
     // Gets the menu from the Semma API
     async function getFoodMenu (restaurants) {
+        let fullDate = new Date()
+        let day = fullDate.getDay() - 1
+        let date = fullDate.getDate()
+        let month = fullDate.getMonth() + 1
+        let year = fullDate.getFullYear()
+
+        let lastUpdateTime = `${date}.${month}.${year} at ${fullDate.toLocaleTimeString("en-GB")}`
+
         // Empties the arrays
         restaurantMenusArray = []
         sortedMealArray = []
@@ -152,7 +156,6 @@ const foodandco = 'foodandco'
                         }
                     }
                 }
-                restaurantMenusArray.push(restaurantMenu)
             }
             catch (e) {
                 console.log(e);
@@ -168,6 +171,7 @@ const foodandco = 'foodandco'
         })
         let dataToWrite = JSON.stringify(sortedMealArray);
         fs.writeFileSync('data.json', dataToWrite);
+        fs.writeFileSync('lastUpdateTime.txt', lastUpdateTime);
         
         return
     }

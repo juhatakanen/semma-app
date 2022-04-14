@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <a href="http://localhost:3000/">Homepage</a>
-  <a href="http://localhost:3000/r">Refresh</a>
+  <a href="http://localhost:3000/">Refresh</a>
+  <a href="http://localhost:3000/update">Update</a>
+  <p>Last updated on <%=time%></p>
     <table id="table" class="table">
-      <tr>
+      <tr class="table-primary">
           <th onclick="sortTable(0)">Nro.</th>
           <th onclick="sortTable(1)">Ruoka</th>
           <th onclick="sortTable(2)">Ravintola</th>
