@@ -15,66 +15,66 @@ const foodandco = 'foodandco'
   
   // These are the restaurants where the data is going to be searched, based in the ID
   const restaurants = [
-        // {
-        //   name: 'Rentukka',
-        //   id: 206838,
-        //   company: semma,
-        //   website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
-        // },
-        // {
-        //     name: 'Taide',
-        //     id: 321708,
-        //     company: foodandco,
-        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
-        // },
-        // {
-        //     name: 'Lozzi',
-        //     id: 207272,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
-        // },
-        // {
-        //     name: 'Piato',
-        //     id: 207735,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
-        // },
-        // {
-        //     name: 'Maija',
-        //     id: 207659,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
-        // },
-        // {
-        //     name: 'Ylistö',
-        //     id: 207103,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
-        // },
-        // {
-        //     name: 'Fiilu',
-        //     id: 231260,
-        //     company: foodandco,
-        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
-        // },
-        // {
-        //     name: 'Syke',
-        //     id: 207483,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
-        // },
-        // {
-        //     name: 'Uno',
-        //     id: 207190,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
-        // },
-        // {
-        //     name: 'Kvarkki',
-        //     id: 207038,
-        //     company: semma,
-        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
-        // },
+        {
+          name: 'Rentukka',
+          id: 206838,
+          company: semma,
+          website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
+        },
+        {
+            name: 'Taide',
+            id: 321708,
+            company: foodandco,
+            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
+        },
+        {
+            name: 'Lozzi',
+            id: 207272,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
+        },
+        {
+            name: 'Piato',
+            id: 207735,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
+        },
+        {
+            name: 'Maija',
+            id: 207659,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
+        },
+        {
+            name: 'Ylistö',
+            id: 207103,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
+        },
+        {
+            name: 'Fiilu',
+            id: 231260,
+            company: foodandco,
+            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
+        },
+        {
+            name: 'Syke',
+            id: 207483,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
+        },
+        {
+            name: 'Uno',
+            id: 207190,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
+        },
+        {
+            name: 'Kvarkki',
+            id: 207038,
+            company: semma,
+            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
+        },
         {
             name: 'Belvedere',
             id: 207354,
@@ -84,7 +84,7 @@ const foodandco = 'foodandco'
     ]
     
     // This is where the menus of the restarants is going to get stored
-    let restaurantMenusArray = []
+
     let sortedMealArray = []
     
     app.get("/", (req, res) => {
@@ -116,8 +116,6 @@ const foodandco = 'foodandco'
         let date = fullDate.getDate()
         let month = fullDate.getMonth() + 1
         let year = fullDate.getFullYear()
-
-        let lastUpdateTime = `${date}.${month}.${year} at ${fullDate.toLocaleTimeString("en-GB")}`
 
         // Empties the arrays
         restaurantMenusArray = []
@@ -171,6 +169,8 @@ const foodandco = 'foodandco'
         })
         let dataToWrite = JSON.stringify(sortedMealArray);
         fs.writeFileSync('data.json', dataToWrite);
+
+        let lastUpdateTime = `${date}.${month}.${year} at ${fullDate.toLocaleTimeString("en-GB")}`
         fs.writeFileSync('lastUpdateTime.txt', lastUpdateTime);
         
         return
