@@ -95,7 +95,7 @@ const foodandco = 'foodandco'
     
     app.get("/", (req, res) => {
         let data = require('./data.json')
-            res.render('home', { data, testi })
+            res.render('home', { data })
         }
     )
 
