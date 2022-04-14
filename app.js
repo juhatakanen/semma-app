@@ -107,6 +107,8 @@ async function getFoodMenu (restaurantObjectArray) {
         if (day === -1) {
             day = 6
         }
+        try {
+            console.log(restaurant.name);
         let restaurantToGet = await axios.get(`https://www.${restaurant.company}.fi/api/restaurant/menu/week?language=fi&restaurantPageId=${restaurant.id}&weekDate=${year}-${month}-${date}`)
         let restaurantMenu = restaurantToGet.data.LunchMenus[day].SetMenus
     
@@ -135,6 +137,11 @@ async function getFoodMenu (restaurantObjectArray) {
         }
         restaurantMenusArray.push(restaurantMenu)
     }
+    catch (e) {
+        console.log(e);
+    }
+    }
+    
     return
 }
 
