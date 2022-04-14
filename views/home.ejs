@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+  <a href="http://localhost:3000/">Homepage</a>
+  <a href="http://localhost:3000/r">Refresh</a>
     <table class="table">
       <tr>
           <th onclick="sortTable(0)">Nro.</th>
@@ -21,7 +23,7 @@
           <th onclick="sortTable(6)">Suolaa / 100g</th>
       </tr>
     <% let j = 1 %>
-    <% for (let sortedMeal of sortedMealArray) { %>
+    <% for (let sortedMeal of data) { %>
         <tr class="<%=sortedMeal.Restaurant%>">
             <td><%=j%></td>
             <td><%=sortedMeal.Name%></td>
