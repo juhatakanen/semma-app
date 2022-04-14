@@ -1,38 +1,88 @@
+a {
+    color: black;
+}
+
 .Rentukka {
     color: white;
     background-color: darkgreen;
 }
+.Rentukka a {
+    color: white;
+}
+
 .Taide {
     background-color: yellow;
 }
+
 .Lozzi {
     background-color: orange;
 }
+
 .Piato {
     color: white;
     background-color: blue;
 }
+.Piato a {
+    color: white;
+}
+
 .Maija {
     background-color: palevioletred;
 }
+
 .Ylistö {
     color: white;
     background-color: blueviolet;
 }
+.Ylistö a {
+    color: white;
+}
+
 .Fiilu {
     color: white;
     background-color: brown;
 }
+.Fiilu a {
+    color: white;
+}
+
 .Syke {
     background-color: lightblue;
 }
+
 .Uno {
     color: white;
     background-color: black;
 }
+.Uno a {
+    color: white;
+}
+
 .Kvarkki {
     background-color: white;
 }
+
 .Belvedere {
     background-color: burlywood;
+}
+
+
+body {
+  margin: 0;
+  padding: 2rem;
+}
+
+table {
+  text-align: left;
+  position: relative;
+  border-collapse: collapse; 
+}
+th, td {
+  padding: 0.25rem;
+}
+th {
+  background-color: white;
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
