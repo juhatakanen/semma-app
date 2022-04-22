@@ -22,67 +22,67 @@ const foodandco = 'foodandco'
           id: 206838,
           company: semma,
           website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
-        },
-        {
-            name: 'Taide',
-            id: 321708,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
-        },
-        {
-            name: 'Lozzi',
-            id: 207272,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
-        },
-        {
-            name: 'Piato',
-            id: 207735,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
-        },
-        {
-            name: 'Maija',
-            id: 207659,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
-        },
-        {
-            name: 'Ylistö',
-            id: 207103,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
-        },
-        {
-            name: 'Fiilu',
-            id: 231260,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
-        },
-        {
-            name: 'Syke',
-            id: 207483,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
-        },
-        {
-            name: 'Uno',
-            id: 207190,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
-        },
-        {
-            name: 'Kvarkki',
-            id: 207038,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
-        },
-        {
-            name: 'Belvedere',
-            id: 207354,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
         }
+        // {
+        //     name: 'Taide',
+        //     id: 321708,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
+        // },
+        // {
+        //     name: 'Lozzi',
+        //     id: 207272,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
+        // },
+        // {
+        //     name: 'Piato',
+        //     id: 207735,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
+        // },
+        // {
+        //     name: 'Maija',
+        //     id: 207659,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
+        // },
+        // {
+        //     name: 'Ylistö',
+        //     id: 207103,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
+        // },
+        // {
+        //     name: 'Fiilu',
+        //     id: 231260,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
+        // },
+        // {
+        //     name: 'Syke',
+        //     id: 207483,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
+        // },
+        // {
+        //     name: 'Uno',
+        //     id: 207190,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
+        // },
+        // {
+        //     name: 'Kvarkki',
+        //     id: 207038,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
+        // },
+        // {
+        //     name: 'Belvedere',
+        //     id: 207354,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
+        // }
     ]
 
     const blueJamixRestaurants = [
@@ -134,10 +134,6 @@ const foodandco = 'foodandco'
                 })
                 let dataToWrite = JSON.stringify(sortedMealArrayInGet);
                 fs.writeFileSync('data.json', dataToWrite);
-        
-            
-
-                
                 let data = require('./data.json')
                 let time = (fs.readFileSync('lastUpdateTime.txt')).toString();
                 res.render('home', { data , time })
@@ -332,104 +328,29 @@ const foodandco = 'foodandco'
             getInfo()
           }
 
-        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 1}, getBlueRestaurantMeal)
-        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 3}, getBlueRestaurantMeal)
-        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 5}, getBlueRestaurantMeal)
-        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 7}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 1, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 3, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 5, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 7, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 1, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 3, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 5, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
-          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 7, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 1, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 3, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 5, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 7, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 1, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 3, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 5, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 7, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
 
-          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 1, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 3, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 5, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 7, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 1, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 3, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 5, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 7, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 1, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 3, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 5, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
-          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 7, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 1, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 3, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 5, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 7, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 1, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 3, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 5, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 7, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 1, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 3, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 5, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+        //   await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 7, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
      
-        //   await cluster.task(async ({ page, data: url }) => {
-        //     await page.goto(url, {'waitUntil' : 'networkidle2'})
-        //     const mealAmount = await page.evaluate(() => {
-        //         return (document.querySelectorAll('.v-button.v-widget.multiline.v-button-multiline.icon-align-right.v-button-icon-align-right.v-has-width')).length
-        //     })
-        //     console.log(mealAmount);
-
-            // const ravintoarvotButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div"
-            // const edellinenButton = "#main-view > div > div > div:nth-child(1) > div > div > div > div.button-navigation.button-navigation--previous > div"
-            // const firstMealPartButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(3) > div"
-            // const secondMealPartButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(5) > div"
-
-        //     async function getInfo() {
-        //         const evaluate = await page.evaluate(() => {
-        //             const values = []
-        //             let nameFromPuppeteer = document.querySelector("#main-view > div > div > div:nth-child(1) > div > div > div > div.caption-container > div.sub-caption-container > div.label-sub-caption > div")
-        //             const valuesFromPuppeteer = document.querySelectorAll("li span")
-        //             valuesFromPuppeteer.forEach((value) => {
-        //                 values.push( value.innerHTML.toString() )
-        //             })
-        //             let arrayToReturn = [nameFromPuppeteer.innerHTML, values.join()]
-        //             return arrayToReturn
-        //         })
-        //         let protein = proteinNumberFPuppeteer(evaluate[1])
-        //         let kcal = kcalNumberFPuppeteer(evaluate[1])
-        //         let mealPart = {
-        //             Name: evaluate[0],
-        //             Protein : protein,
-        //             Kcal : kcal,
-        //             KcalPerProtein : Math.round((kcal / protein) * 100) / 100,
-        //             Salt : saltNumberFPuppeteer(evaluate[1]),
-        //             Restaurant : puppeteerRestaurants[0].name,
-        //             Website : puppeteerRestaurants[0].website
-        //         }
-        //         sortedMealArrayInGet.push(mealPart)
-        //     }
-            
-        //     await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(1) > div")
-        //     await page.click(`${ravintoarvotButton}`)
-        //     await page.click(`${firstMealPartButton}`)
-        //     getInfo()
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${secondMealPartButton}`)
-        //     getInfo()
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div")
-        //     await page.click(`${ravintoarvotButton}`)
-        //     await page.click(`${firstMealPartButton}`)
-        //     getInfo()
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${secondMealPartButton}`)
-        //     getInfo()
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div")
-        //     await page.click(`${ravintoarvotButton}`)
-        //     await page.click(`${firstMealPartButton}`)
-        //     getInfo()
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click(`${edellinenButton}`)
-        //     await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(7) > div")
-        //     await page.click(`${ravintoarvotButton}`)
-        //     await page.click(`${firstMealPartButton}`)
-        //     getInfo()
-        //     console.log(protein, kcal);
-        //     return sortedMealArrayInGet
-        // }
-        //   )
+     
           await cluster.idle();
           await cluster.close();
         }
@@ -450,9 +371,6 @@ const foodandco = 'foodandco'
             return saltNumber
         }
         
-        // {"Name":"Karamellisoitua kassleria ja kasvispaistosta","RecipeId":19960,"Diets":["A","G","L","M","VS"],"Nutrients":null,"IconUrl":"","Protein":18.1,"Kcal":224,"KcalPerProtein":12.38,"Salt":1.7,"Restaurant":"Rentukka","Website":"https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/"}
-    
-
   let port = process.env.PORT;
   if (port == null || port == "") {
     port = 3000;
