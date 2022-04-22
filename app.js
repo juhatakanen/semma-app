@@ -84,6 +84,31 @@ const foodandco = 'foodandco'
             website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
         }
     ]
+
+    const blueJamixRestaurants = [
+        {
+            name: 'Ilokivi',
+            website: 'https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1'
+        },
+        {
+            name: 'Musakampus',
+            website: 'https://fi.jamix.cloud/apps/menu/?anro=96786&k=10&mt=4'
+        }
+    ]
+    const greyJamixRestaurants = [
+        {
+            name: 'Twist',
+            website: 'https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102'
+        },
+        {
+            name: 'Cube',
+            website: 'https://fi.jamix.cloud/apps/menu/?anro=93077&k=61&mt=103'
+        },
+        {
+            name: 'Anna',
+            website: 'https://fi.jamix.cloud/apps/menu/?anro=93077&k=65&mt=56'
+        },
+    ]
     
     // This is where the menus of the restarants is going to get stored
 
@@ -200,14 +225,14 @@ const foodandco = 'foodandco'
     async function getPuppeteerFood(sortedMealArrayInGet)  {
         const cluster = await Cluster.launch({
             concurrency: Cluster.CONCURRENCY_CONTEXT,
-            maxConcurrency: 8,
+            maxConcurrency: 15,
             puppeteerOptions: {
                 headless: false,
                 slowMo: 250
             }
           })
 
-          const getIlokiviMeal = async ({ page, data: {url, mealnumber} }) => {
+          const getBlueRestaurantMeal = async ({ page, data: {url, mealnumber, restaurant, website} }) => {
               await page.goto(url)
               async function getInfo() {
                 const evaluate = await page.evaluate(() => {
@@ -228,8 +253,8 @@ const foodandco = 'foodandco'
                     Kcal : kcal,
                     KcalPerProtein : Math.round((kcal / protein) * 100) / 100,
                     Salt : saltNumberFPuppeteer(evaluate[1]),
-                    Restaurant : 'Ilokivi',
-                    Website : 'https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1'
+                    Restaurant : restaurant,
+                    Website : website
                 }
                 sortedMealArrayInGet.push(mealPart)
             }
@@ -246,7 +271,7 @@ const foodandco = 'foodandco'
             await page.click(`${secondMealPartButton}`)
             getInfo()
           }
-          const getTwistMeal = async ({ page, data: {url, mealnumber} }) => {
+          const getGreyRestaurantMeal = async ({ page, data: {url, mealnumber, restaurant, website} }) => {
               await page.goto(url)
               async function getInfo() {
                 const evaluate = await page.evaluate(() => {
@@ -261,8 +286,8 @@ const foodandco = 'foodandco'
                 })
                 let mealPart = {
                         Name: evaluate[0],
-                        Restaurant : 'Twist',
-                        Website : 'https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102'
+                        Restaurant : restaurant,
+                        Website : website
                 }
                 if (evaluate[1]) {
                 mealPart.Protein = proteinNumberFPuppeteer(evaluate[1])
@@ -307,14 +332,31 @@ const foodandco = 'foodandco'
             getInfo()
           }
 
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 1}, getIlokiviMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 3}, getIlokiviMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 5}, getIlokiviMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 7}, getIlokiviMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102", mealnumber: 1}, getTwistMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102", mealnumber: 3}, getTwistMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102", mealnumber: 5}, getTwistMeal)
-          await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=93077&k=60&mt=102", mealnumber: 7}, getTwistMeal)
+        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 1}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 3}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 5}, getBlueRestaurantMeal)
+        //   await cluster.queue({url: "https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1", mealnumber: 7}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 1, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 3, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 5, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[0].website, mealnumber: 7, restaurant: blueJamixRestaurants[0].name, website: blueJamixRestaurants[0].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 1, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 3, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 5, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+          await cluster.queue({url: blueJamixRestaurants[1].website, mealnumber: 7, restaurant: blueJamixRestaurants[1].name, website: blueJamixRestaurants[1].website}, getBlueRestaurantMeal)
+
+          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 1, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 3, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 5, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[0].website, mealnumber: 7, restaurant: greyJamixRestaurants[0].name, website: greyJamixRestaurants[0].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 1, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 3, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 5, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[1].website, mealnumber: 7, restaurant: greyJamixRestaurants[1].name, website: greyJamixRestaurants[1].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 1, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 3, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 5, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
+          await cluster.queue({url: greyJamixRestaurants[2].website, mealnumber: 7, restaurant: greyJamixRestaurants[2].name, website: greyJamixRestaurants[2].website}, getGreyRestaurantMeal)
      
         //   await cluster.task(async ({ page, data: url }) => {
         //     await page.goto(url, {'waitUntil' : 'networkidle2'})
