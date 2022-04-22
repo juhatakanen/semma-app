@@ -1,8 +1,10 @@
 const express = require("express")
-const axios = require("axios")
 const app = express()
+const axios = require("axios")
 const path = require('path')
 const fs = require('fs')
+const puppeteer = require("puppeteer")
+const { Cluster } = require('puppeteer-cluster');
 
 app.use(express.static('public'))
 app.use('/css', express.static(__dirname + 'public.css'))
@@ -20,66 +22,73 @@ const foodandco = 'foodandco'
           id: 206838,
           company: semma,
           website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
-        },
+        }
+        // {
+        //     name: 'Taide',
+        //     id: 321708,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
+        // },
+        // {
+        //     name: 'Lozzi',
+        //     id: 207272,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
+        // },
+        // {
+        //     name: 'Piato',
+        //     id: 207735,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
+        // },
+        // {
+        //     name: 'Maija',
+        //     id: 207659,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
+        // },
+        // {
+        //     name: 'Ylistö',
+        //     id: 207103,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
+        // },
+        // {
+        //     name: 'Fiilu',
+        //     id: 231260,
+        //     company: foodandco,
+        //     website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
+        // },
+        // {
+        //     name: 'Syke',
+        //     id: 207483,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
+        // },
+        // {
+        //     name: 'Uno',
+        //     id: 207190,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
+        // },
+        // {
+        //     name: 'Kvarkki',
+        //     id: 207038,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
+        // },
+        // {
+        //     name: 'Belvedere',
+        //     id: 207354,
+        //     company: semma,
+        //     website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
+        // }
+    ]
+  const puppeteerRestaurants = [
         {
-            name: 'Taide',
-            id: 321708,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/taide/'
-        },
-        {
-            name: 'Lozzi',
-            id: 207272,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/lozzi/'
-        },
-        {
-            name: 'Piato',
-            id: 207735,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/piato/'
-        },
-        {
-            name: 'Maija',
-            id: 207659,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/mattilanniemi/maija/'
-        },
-        {
-            name: 'Ylistö',
-            id: 207103,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/ravintola-ylisto/'
-        },
-        {
-            name: 'Fiilu',
-            id: 231260,
-            company: foodandco,
-            website: 'https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/jyvaskyla/fiilu/'
-        },
-        {
-            name: 'Syke',
-            id: 207483,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/kahvila-syke/'
-        },
-        {
-            name: 'Uno',
-            id: 207190,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ruusupuisto/ravintola-uno/'
-        },
-        {
-            name: 'Kvarkki',
-            id: 207038,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/ylistonrinne/kahvila-kvarkki/'
-        },
-        {
-            name: 'Belvedere',
-            id: 207354,
-            company: semma,
-            website: 'https://www.semma.fi/ravintolat2/seminaarimaki/belvedere/'
+          name: 'Ilokivi',
+          id: 97032,
+          website: 'https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1'
         }
     ]
     
@@ -90,13 +99,26 @@ const foodandco = 'foodandco'
     app.get("/", (req, res) => {
         let data = require('./data.json')
         let time = (fs.readFileSync('lastUpdateTime.txt')).toString();
-            res.render('home', { data , time })
+        res.render('home', { data , time })
         }
     )
 
     app.get("/update", async (req, res) => {
             try {
-                await getFoodMenu(restaurants)
+                sortedMealArrayInGet = await getFoodMenu(restaurants)
+                await getPuppeteerFood(sortedMealArrayInGet)
+                sortedMealArrayInGet.sort((a, b) => {
+                    if (a.KcalPerProtein > b.KcalPerProtein) {
+                        return 1
+                    } else {
+                        return -1
+                    }
+                })
+                let dataToWrite = JSON.stringify(sortedMealArrayInGet);
+                fs.writeFileSync('data.json', dataToWrite);
+        
+            
+
                 
                 let data = require('./data.json')
                 let time = (fs.readFileSync('lastUpdateTime.txt')).toString();
@@ -117,8 +139,7 @@ const foodandco = 'foodandco'
         let month = fullDate.getMonth() + 1
         let year = fullDate.getFullYear()
 
-        // Empties the arrays
-        restaurantMenusArray = []
+        // Empties the array
         sortedMealArray = []
         
         for (const restaurant of restaurants) {
@@ -160,20 +181,10 @@ const foodandco = 'foodandco'
             }
         }
  
-        sortedMealArray.sort((a, b) => {
-            if (a.KcalPerProtein > b.KcalPerProtein) {
-                return 1
-            } else {
-                return -1
-            }
-        })
-        let dataToWrite = JSON.stringify(sortedMealArray);
-        fs.writeFileSync('data.json', dataToWrite);
-
         let lastUpdateTime = `${date}.${month}.${year} at ${fullDate.toLocaleTimeString("en-GB")}`
         fs.writeFileSync('lastUpdateTime.txt', lastUpdateTime);
         
-        return
+        return sortedMealArray
     }
     
     function proteinNumberF(food) {
@@ -192,6 +203,64 @@ const foodandco = 'foodandco'
         const kcalNumber = Number(kcalCommaArray[0])
         return kcalNumber
     }
+
+    async function getPuppeteerFood(sortedMealArrayInGet)  {
+        const browser = await puppeteer.launch({
+            headless: false,
+            slowMo: 50
+          })
+          const page = await browser.newPage()
+          await page.goto(`https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1`, {
+            waitUntil: 'networkidle2'
+          })
+          await page.click(".v-button.v-widget.multiline.v-button-multiline.icon-align-right.v-button-icon-align-right.v-has-width")
+          await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div")
+          await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(3) > div")
+          const evaluate = await page.evaluate(() => {
+              const values = []
+              let nameFromPuppeteer = document.querySelector("#main-view > div > div > div:nth-child(1) > div > div > div > div.caption-container > div.sub-caption-container > div.label-sub-caption > div")
+              const valuesFromPuppeteer = document.querySelectorAll("li span")
+              valuesFromPuppeteer.forEach((value) => {
+                values.push( value.innerHTML.toString() )
+              })
+              let arrayToReturn = [nameFromPuppeteer.innerHTML, values.join()]
+                return arrayToReturn
+          })
+          let protein = proteinNumberFPuppeteer(evaluate[1])
+          let kcal = kcalNumberFPuppeteer(evaluate[1])
+          let mealPart = {
+              Name: evaluate[0],
+              Protein : protein,
+              Kcal : kcal,
+              KcalPerProtein : Math.round((kcal / protein) * 100) / 100,
+              Salt : saltNumberFPuppeteer(evaluate[1]),
+              Restaurant : puppeteerRestaurants[0].name,
+              Website : puppeteerRestaurants[0].website
+            }
+          
+            sortedMealArrayInGet.push(mealPart)
+          console.log(protein, kcal);
+          return sortedMealArrayInGet
+        }
+
+        function proteinNumberFPuppeteer(food) {
+            const proteinCommaArray = /(?<=Proteiini,)...../.exec(food)
+            const proteinNumber = Number(proteinCommaArray[0].replace(/,/g, '.')) 
+            return proteinNumber
+        }
+        function kcalNumberFPuppeteer(food) {
+            const kcalCommaArray = /(?<=Energia,).../.exec(food)
+            const kcalNumber = Number(kcalCommaArray[0])
+            return kcalNumber
+        }
+        function saltNumberFPuppeteer(food) {
+            const saltCommaArray = /(?<=Suola,)..../.exec(food)
+            const saltNumber = Number(saltCommaArray[0].replace(/,/g, '.')) 
+            return saltNumber
+        }
+        
+        // {"Name":"Karamellisoitua kassleria ja kasvispaistosta","RecipeId":19960,"Diets":["A","G","L","M","VS"],"Nutrients":null,"IconUrl":"","Protein":18.1,"Kcal":224,"KcalPerProtein":12.38,"Salt":1.7,"Restaurant":"Rentukka","Website":"https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/"}
+    
 
   let port = process.env.PORT;
   if (port == null || port == "") {
