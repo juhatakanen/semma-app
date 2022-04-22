@@ -17,12 +17,12 @@ const foodandco = 'foodandco'
   
   // These are the restaurants where the data is going to be searched, based in the ID
   const restaurants = [
-        {
-          name: 'Rentukka',
-          id: 206838,
-          company: semma,
-          website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
-        }
+        // {
+        //   name: 'Rentukka',
+        //   id: 206838,
+        //   company: semma,
+        //   website: 'https://www.semma.fi/ravintolat2/muut/ravintola-rentukka/'
+        // }
         // {
         //     name: 'Taide',
         //     id: 321708,
@@ -205,42 +205,89 @@ const foodandco = 'foodandco'
     }
 
     async function getPuppeteerFood(sortedMealArrayInGet)  {
-        const browser = await puppeteer.launch({
-            headless: false,
-            slowMo: 50
-          })
-          const page = await browser.newPage()
-          await page.goto(`https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1`, {
-            waitUntil: 'networkidle2'
-          })
-          await page.click(".v-button.v-widget.multiline.v-button-multiline.icon-align-right.v-button-icon-align-right.v-has-width")
-          await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div")
-          await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(3) > div")
-          const evaluate = await page.evaluate(() => {
-              const values = []
-              let nameFromPuppeteer = document.querySelector("#main-view > div > div > div:nth-child(1) > div > div > div > div.caption-container > div.sub-caption-container > div.label-sub-caption > div")
-              const valuesFromPuppeteer = document.querySelectorAll("li span")
-              valuesFromPuppeteer.forEach((value) => {
-                values.push( value.innerHTML.toString() )
-              })
-              let arrayToReturn = [nameFromPuppeteer.innerHTML, values.join()]
-                return arrayToReturn
-          })
-          let protein = proteinNumberFPuppeteer(evaluate[1])
-          let kcal = kcalNumberFPuppeteer(evaluate[1])
-          let mealPart = {
-              Name: evaluate[0],
-              Protein : protein,
-              Kcal : kcal,
-              KcalPerProtein : Math.round((kcal / protein) * 100) / 100,
-              Salt : saltNumberFPuppeteer(evaluate[1]),
-              Restaurant : puppeteerRestaurants[0].name,
-              Website : puppeteerRestaurants[0].website
+        const cluster = await Cluster.launch({
+            concurrency: Cluster.CONCURRENCY_CONTEXT,
+            maxConcurrency: 2,
+            puppeteerOptions: {
+                headless: false,
+                slowMo: 150
             }
-          
-            sortedMealArrayInGet.push(mealPart)
-          console.log(protein, kcal);
-          return sortedMealArrayInGet
+          })
+          await cluster.queue(`https://fi.jamix.cloud/apps/menu/?anro=97032&k=1&mt=1`)
+          await cluster.task(async ({ page, data: url }) => {
+            await page.goto(url, {'waitUntil' : 'networkidle2'})
+            const amount = await page.evaluate(() => {
+                let amountToReturn = document.querySelectorAll('.v-button.v-widget.multiline.v-button-multiline.icon-align-right.v-button-icon-align-right.v-has-width')
+                return amountToReturn.length
+            })
+            const ravintoarvotButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div"
+            const edellinenButton = "#main-view > div > div > div:nth-child(1) > div > div > div > div.button-navigation.button-navigation--previous > div"
+            const firstMealPartButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(3) > div"
+            const secondMealPartButton = "#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div > div:nth-child(5) > div"
+            console.log(amount);
+            await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(1) > div")
+            await page.click(`${ravintoarvotButton}`)
+            await page.click(`${firstMealPartButton}`)
+            async function getInfo() {
+                
+                const evaluate = await page.evaluate(() => {
+                    const values = []
+                    let nameFromPuppeteer = document.querySelector("#main-view > div > div > div:nth-child(1) > div > div > div > div.caption-container > div.sub-caption-container > div.label-sub-caption > div")
+                    const valuesFromPuppeteer = document.querySelectorAll("li span")
+                    valuesFromPuppeteer.forEach((value) => {
+                        values.push( value.innerHTML.toString() )
+                    })
+                    let arrayToReturn = [nameFromPuppeteer.innerHTML, values.join()]
+                    return arrayToReturn
+                })
+                let protein = proteinNumberFPuppeteer(evaluate[1])
+                let kcal = kcalNumberFPuppeteer(evaluate[1])
+                let mealPart = {
+                    Name: evaluate[0],
+                    Protein : protein,
+                    Kcal : kcal,
+                    KcalPerProtein : Math.round((kcal / protein) * 100) / 100,
+                    Salt : saltNumberFPuppeteer(evaluate[1]),
+                    Restaurant : puppeteerRestaurants[0].name,
+                    Website : puppeteerRestaurants[0].website
+                }
+                
+                sortedMealArrayInGet.push(mealPart)
+            }
+            getInfo()
+            await page.click(`${edellinenButton}`)
+            await page.click(`${secondMealPartButton}`)
+            getInfo()
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(3) > div")
+            await page.click(`${ravintoarvotButton}`)
+            await page.click(`${firstMealPartButton}`)
+            getInfo()
+            await page.click(`${edellinenButton}`)
+            await page.click(`${secondMealPartButton}`)
+            getInfo()
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(5) > div")
+            await page.click(`${ravintoarvotButton}`)
+            await page.click(`${firstMealPartButton}`)
+            getInfo()
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click(`${edellinenButton}`)
+            await page.click("#main-view > div > div > div.v-slot.v-slot-main-view__content.v-slot-borderless.v-align-center.v-align-middle > div > div.v-panel-content.v-panel-content-main-view__content.v-panel-content-borderless.v-scrollable > div > div:nth-child(7) > div")
+            await page.click(`${ravintoarvotButton}`)
+            await page.click(`${firstMealPartButton}`)
+            getInfo()
+            console.log(protein, kcal);
+            return sortedMealArrayInGet
+        }
+          )
+          await cluster.idle();
+          await cluster.close();
         }
 
         function proteinNumberFPuppeteer(food) {
