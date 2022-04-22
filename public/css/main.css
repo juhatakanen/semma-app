@@ -27,12 +27,12 @@ a {
 }
 
 .Maija {
-    background-color: palevioletred;
+    background-color: rgb(112, 152, 216);
 }
 
 .Ylistö {
     color: white;
-    background-color: blueviolet;
+    background-color: rgb(27, 0, 136);
 }
 .Ylistö a {
     color: white;
@@ -47,24 +47,42 @@ a {
 }
 
 .Syke {
-    background-color: lightblue;
+    background-color: rgb(207, 242, 157);
 }
 
 .Uno {
     color: white;
-    background-color: black;
+    background-color: rgb(138, 142, 30);
 }
 .Uno a {
     color: white;
 }
 
 .Kvarkki {
-    background-color: white;
+    background-color: rgb(106, 116, 249);
 }
 
 .Belvedere {
-    background-color: burlywood;
+    background-color: rgb(156, 156, 156);
 }
+.Ilokivi {
+    background-color: rgb(178, 226, 56);
+}
+.Musakampus {
+    background-color: rgb(226, 107, 56);
+    color:white;
+}
+.Twist {
+    background-color: rgb(226, 56, 56);
+}
+.Cube {
+    background-color: rgb(129, 34, 69);
+    color: white;
+}
+.Anna {
+    background-color: rgb(245, 11, 105);
+}
+
 
 
 body {
